@@ -15,9 +15,10 @@ exports.up = function (knex) {
       table.string("name").notNullable();
       table.string("size").notNullable();
       table.integer("price").notNullable();
-      table.string("description").notNullable();
-      table.string("instructions").notNullable();
-      table.string("ingredients").notNullable();
+      table.string("description", 1000).notNullable();
+      table.string("instructions", 1000).notNullable();
+      table.string("ingredients", 1000).notNullable();
+      table.string("image_path", 1000).notNullable();
     })
     .createTable("comments", (table) => {
       table.increments("id").primary();
@@ -34,7 +35,7 @@ exports.up = function (knex) {
         .references("id")
         .inTable("products");
       table.string("title").notNullable();
-      table.string("comment").notNullable();
+      table.string("comment", 1000).notNullable();
       table.timestamp("created_at").defaultTo(knex.fn.now());
     })
     .createTable("favourites", (table) => {
