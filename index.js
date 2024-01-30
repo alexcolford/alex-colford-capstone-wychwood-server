@@ -13,7 +13,7 @@ app.use(express.json());
 
 // app.use("/users", usersRoutes);
 app.use("/products", productsRoutes);
-// app.use("/comments", commentsRoutes);
+app.use("/comments", commentsRoutes);
 
 app.use(express.static("./public"));
 

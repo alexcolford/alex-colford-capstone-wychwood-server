@@ -5,4 +5,9 @@ router.route("/").get(productController.getAllProducts);
 
 router.route("/:productId").get(productController.getProductbyId);
 
+router
+  .route("/:productId/comments")
+  .get(productController.getAllCommentsForProduct)
+  .post(productController.AddComment);
+
 module.exports = router;
