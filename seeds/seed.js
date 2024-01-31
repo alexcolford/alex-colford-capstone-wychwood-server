@@ -1,6 +1,7 @@
 exports.seed = async function (knex) {
   // Deletes ALL existing entries
   await knex("users").del();
+  await knex("elements").del();
   await knex("products").del();
   await knex("comments").del();
   await knex("users").insert([
@@ -28,6 +29,56 @@ exports.seed = async function (knex) {
       id: 5,
       name: "Sophia Taylor",
       email: "sophia.taylor@example.com",
+    },
+  ]);
+  await knex("elements").insert([
+    {
+      id: 1,
+      name: "Grapeseed Oil",
+      description:
+        "Made from seeds of Vitis vinifera, this light oil absorbs quickly to moisturise without clogging pores. It also boosts circulation which can reduce the appearance of blemishes, wrinkles, sun damage, stretch marks, cellulite and varicose veins. Soothes eczema",
+    },
+    {
+      id: 2,
+      name: "Olive Oil",
+      description:
+        "Made from fruit of Olea europa, this helps maintain smooth, soft skin and protects against damaging UV rays. Anti-bacterial and anti-microbial phenols prevent inflammation and infection. Offers relief to joints and muscles affected by sprains or arthritis.",
+    },
+    {
+      id: 3,
+      name: "Jojoba Oil",
+      description:
+        "Made from seeds of Simmondsia chinensis, Jojoba oil is actually liquid wax ester, not an oil and has a chemical composition that is remarkably close to our skin’s natural sebum. It gently moisturises, soothes, and softens skin without leaving a greasy residue.",
+    },
+    {
+      id: 4,
+      name: "Sweet Almond Oil",
+      description:
+        "Made from Prunus dulcis, this oil can heal superficial skin burns, soothe dry and chapped skin, as well as skin affected by dermatosis, eczema, and psoriasis. Good for acne-prone or sensitive skin and can also help with varicose veins and spider veins.",
+    },
+    {
+      id: 5,
+      name: "Coconut Oil",
+      description:
+        "Made from Cocos nucifera, this oil hydrates and creates a protective barrier on the skin. Soothes sunburn, blisters, itchy skin, and promotes the growth of newer healthier skin.",
+    },
+    {
+      id: 6,
+      name: "Argan Oil",
+      description:
+        "Made from fruit of Argania spinosa, this oil hydrates, conditions, and softens hair and skin without leaving a greasy residue. Reduces appearance of wrinkles, soothes inflammation and irritation on acne-prone skin and can help reduce appearance of scarring.",
+    },
+    {
+      id: 7,
+      name: "Avacado Oil",
+      description:
+        "Made from fruit of Persea americana, this oil is ideal for those with rashes, eczema, psoriasis, and dry skin. It smooths the look of wrinkles, tightens skin, and diminishes the appearance of scars, age spots, and other unwanted blemishes.",
+    },
+    {
+      id: 8,
+      name: "Sunflower Oil",
+      description:
+        "Made from seeds of Helianthus annuus, this oil hydrates, softens, prevents against external damage, and aids in skin regeneration. It evens out skin tone while reducing the appearance of pores and eliminating acne-causing bacteria.",
     },
   ]);
   await knex("products").insert([

@@ -10,6 +10,11 @@ exports.up = function (knex) {
       table.string("email").notNullable();
       table.string("password");
     })
+    .createTable("elements", (table) => {
+      table.increments("id").primary();
+      table.string("name").notNullable();
+      table.string("description", 1000).notNullable();
+    })
     .createTable("products", (table) => {
       table.increments("id").primary();
       table.string("name").notNullable();
@@ -62,6 +67,7 @@ exports.up = function (knex) {
 exports.down = function (knex) {
   return knex.schema
     .dropTable("users")
+    .dropTable("elements")
     .dropTable("products")
     .dropTable("comments")
     .dropTable("favourites");
