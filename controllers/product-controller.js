@@ -35,6 +35,23 @@ const getAllCommentsForProduct = async (req, res) => {
   }
 };
 
+const getUserForComment = async (req, res) => {
+  try {
+    const user = await knex("users")
+      .join("comments", "comments.user_id", "=", "users.id")
+      .select("users.*")
+      .where({ "comments.id": commentId });
+
+    res.status(200).json(user);
+  } catch (error) {
+    res
+      .status(500)
+      .send(
+        `Unable to retrieve user for comment with ID ${req.params.userId}: ${error}`
+      );
+  }
+};
+
 const AddComment = async (req, res) => {
   try {
     const { productId } = req.params;
@@ -65,4 +82,5 @@ module.exports = {
   getProductbyId,
   getAllCommentsForProduct,
   AddComment,
+  getUserForComment,
 };

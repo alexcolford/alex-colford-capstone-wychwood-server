@@ -8,6 +8,7 @@ router.route("/:productId").get(productController.getProductbyId);
 router
   .route("/:productId/comments")
   .get(productController.getAllCommentsForProduct)
+  .get(productController.getUserForComment)
   .post(productController.AddComment);
 
 module.exports = router;
