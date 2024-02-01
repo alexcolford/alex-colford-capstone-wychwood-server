@@ -9,26 +9,31 @@ exports.seed = async function (knex) {
       id: 1,
       name: "Olivia Johnson",
       email: "olivia.johnson@example.com",
+      password: "12345678",
     },
     {
       id: 2,
       name: "Ethan Parker",
       email: "ethan.parker@example.com",
+      password: "12345678",
     },
     {
       id: 3,
       name: "Ava Williams",
       email: "ava.williams@example.com",
+      password: "12345678",
     },
     {
       id: 4,
       name: "Noah Davis",
       email: "noah.davis@example.com",
+      password: "12345678",
     },
     {
       id: 5,
       name: "Sophia Taylor",
       email: "sophia.taylor@example.com",
+      password: "12345678",
     },
   ]);
   await knex("elements").insert([
