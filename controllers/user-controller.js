@@ -62,7 +62,7 @@ const LoginUser = async (req, res) => {
     { expiresIn: "24h" }
   );
 
-  res.json({ token: token });
+  res.json({ token: token, id: user.id });
 };
 
 const CurrentUser = async (req, res) => {

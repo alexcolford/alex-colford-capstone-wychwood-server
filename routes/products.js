@@ -8,6 +8,9 @@ router.route("/:productId").get(productController.getProductbyId);
 router
   .route("/:productId/comments")
   .get(productController.getAllCommentsForProduct)
-  .post(productController.AddComment);
+  .post(productController.addComment)
+  .delete(productController.deleteComment);
+
+router.route("/:productId/favourite").post(productController.addFavourite);
 
 module.exports = router;

@@ -52,17 +52,18 @@ const getUserForComment = async (req, res) => {
   }
 };
 
-const AddComment = async (req, res) => {
+const addComment = async (req, res) => {
   try {
-    const { productId } = req.params;
     const commentData = {
-      ...req.body,
-      product_id: productId,
+      product_id: req.params.productId,
+      user_id: req.body.user_id,
+      title: req.body.title,
+      comment: req.body.comment,
     };
 
-    const comment = await knex("comments").insert(commentData);
+    const result = await knex("comments").insert(commentData);
 
-    const newCommentId = comment[0];
+    const newCommentId = result[0];
     const addedComment = await knex("comments").where({
       id: newCommentId,
     });
@@ -77,10 +78,61 @@ const AddComment = async (req, res) => {
   }
 };
 
+const deleteComment = async (req, res) => {
+  try {
+    const rowsDeleted = await knex("comments")
+      .where({ id: req.params.id })
+      .delete();
+
+    if (rowsDeleted === 0) {
+      return res
+        .status(404)
+        .json({ message: `Comment with ID ${req.params.id} not found` });
+    }
+    res.sendStatus(204);
+  } catch (error) {
+    res.status(500).json({ message: `Unable to delete comment: ${error}` });
+  }
+};
+
+const addFavourite = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const { userId } = req.user.id;
+
+    const userExists = await knex("users").where({ id: userId }).first();
+    const productExists = await knex("products")
+      .where({ id: productId })
+      .first();
+
+    if (!userExists || !productExists) {
+      return res.status(404).json({ message: "User or product not found." });
+    }
+
+    const favouriteData = {
+      user_id: userId,
+      product_id: productId,
+    };
+
+    const favourite = await knex("favorites").insert(favouriteData);
+
+    const newFavouriteId = favourite[0];
+    const addedFavourite = await knex("favourites").where({
+      id: newFavouriteId,
+    });
+
+    res.status(201).json(addedFavourite);
+  } catch (error) {
+    res.status(500).send(`Unable to add product to favorites: ${error}`);
+  }
+};
+
 module.exports = {
   getAllProducts,
   getProductbyId,
   getAllCommentsForProduct,
-  AddComment,
+  addComment,
+  deleteComment,
   getUserForComment,
+  addFavourite,
 };
