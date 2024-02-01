@@ -37,25 +37,70 @@ const AddUser = async (req, res) => {
   }
 };
 
-const getUserForComment = async (req, res) => {
-  try {
-    const user = await knex("users")
-      .join("comments", "comments.user_id", "=", "users.id")
-      .select("users.*")
-      .where({ "comments.id": req.params.id });
+const LoginUser = async (req, res) => {
+  const { email, password } = req.body;
 
-    res.status(200).json(user);
+  if (!email || !password) {
+    return res.status(400).send("Please enter the required fields");
+  }
+
+  const user = await knex("users").where({ email: email }).first();
+
+  if (!user) {
+    return res.status(400).send("Invalid email");
+  }
+
+  const isPasswordCorrect = bcrypt.compareSync(password, user.password);
+
+  if (!isPasswordCorrect) {
+    return res.status(400).send("Invalid password");
+  }
+
+  const token = jwt.sign(
+    { id: user.id, email: user.email },
+    process.env.JWT_KEY,
+    { expiresIn: "24h" }
+  );
+
+  res.json({ token: token });
+};
+
+const CurrentUser = async (req, res) => {
+  if (!req.headers.authorization) {
+    return res.status(401).send("Please login");
+  }
+
+  console.log("Token", req.headers.authorization);
+
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).send("Please provide a valid token");
+  }
+
+  const authToken = authHeader.split(" ")[1];
+
+  try {
+    const decoded = jwt.verify(authToken, process.env.JWT_KEY);
+    console.log("Decoded", decoded);
+
+    const user = await knex("users").where({ id: decoded.id }).first();
+
+    if (!user) {
+      return res.status(401).json({ error: "User not found" });
+    }
+
+    delete user.password;
+
+    res.json(user);
   } catch (error) {
-    res
-      .status(500)
-      .send(
-        `Unable to retrieve user for comment with ID ${req.params.userId}: ${error}`
-      );
+    console.log("Invalid auth token: ", error);
   }
 };
 
 module.exports = {
   getAllUsers,
-  getUserForComment,
   AddUser,
+  LoginUser,
+  CurrentUser,
 };

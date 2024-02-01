@@ -5,4 +5,8 @@ router.route("/").get(userController.getAllUsers);
 
 router.route("/register").post(userController.AddUser);
 
+router.route("/login").post(userController.LoginUser);
+
+router.route("/current").get(userController.CurrentUser);
+
 module.exports = router;
