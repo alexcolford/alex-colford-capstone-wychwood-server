@@ -12,7 +12,7 @@ const getAllUsers = async (_req, res) => {
   }
 };
 
-const AddUser = async (req, res) => {
+const addUser = async (req, res) => {
   const { name, email, password } = req.body;
 
   if (!name || !email || !password) {
@@ -37,7 +37,7 @@ const AddUser = async (req, res) => {
   }
 };
 
-const LoginUser = async (req, res) => {
+const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -65,12 +65,12 @@ const LoginUser = async (req, res) => {
   res.json({ token: token, id: user.id });
 };
 
-const CurrentUser = async (req, res) => {
+const currentUser = async (req, res) => {
   if (!req.headers.authorization) {
     return res.status(401).send("Please login");
   }
 
-  console.log("Token", req.headers.authorization);
+  // console.log("Token", req.headers.authorization);
 
   const authHeader = req.headers.authorization;
 
@@ -98,9 +98,98 @@ const CurrentUser = async (req, res) => {
   }
 };
 
+const getFavouritesForProduct = async (req, res) => {
+  try {
+    const favourites = await knex("products")
+      .join("favourites", "favourites.product_id", "=", "products.id")
+      .select("favourites.*")
+      .where({ "products.id": req.params.productId });
+
+    res.status(200).json(favourites);
+  } catch (error) {
+    res.status(400).send(`Failed to retrieve data: ${error}`);
+  }
+};
+
+const addFavourite = async (req, res) => {
+  try {
+    const favouriteData = {
+      product_id: req.params.productId,
+      user_id: req.body.user_id,
+      is_favourited: true,
+    };
+
+    const result = await knex("favourites").insert(favouriteData);
+
+    const newFavouriteId = result[0];
+    const addedFavourite = await knex("favourites").where({
+      id: newFavouriteId,
+    });
+
+    res.status(201).json(addedFavourite);
+  } catch (error) {
+    res
+      .status(500)
+      .send(
+        `Unable to add product with ID ${req.params.productId} to favourites:, ${error}`
+      );
+  }
+};
+
+const getAllFavourites = async (req, res) => {
+  try {
+    const data = await knex("favourites");
+
+    console.log("Query Result", data);
+
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(400).send(`Failed to retrieve data: ${error}`);
+  }
+};
+
+// const getFavouritesForUser = async (req, res) => {
+//   try {
+//     const userId = req.params.userId;
+
+//     const favourites = await knex("users")
+//       .join("favourites", "favourites.user_id", "=", "users.id")
+//       .select("favourites.*")
+//       .where({ "users.id": userId });
+
+//     console.log("Generated SQL Query:", favourites.toString());
+
+//     console.log("Query Result:", favourites);
+
+//     res.status(200).json(favourites);
+//   } catch (error) {
+//     res.status(400).send(`Failed to retrieve data: ${error}`);
+//   }
+// };
+
+// const getAllCommentsForProduct = async (req, res) => {
+//   try {
+//     const comments = await knex("products")
+//       .join("comments", "comments.product_id", "=", "products.id")
+//       .select("comments.*")
+//       .where({ "products.id": req.params.productId });
+
+//     res.status(200).json(comments);
+//   } catch (error) {
+//     res
+//       .status(500)
+//       .send(
+//         `Unable to retrieve comments for product with ID ${req.params.productId}: ${error}`
+//       );
+//   }
+// };
+
 module.exports = {
   getAllUsers,
-  AddUser,
-  LoginUser,
-  CurrentUser,
+  addUser,
+  loginUser,
+  currentUser,
+  getFavouritesForProduct,
+  addFavourite,
+  getAllFavourites,
 };
