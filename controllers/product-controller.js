@@ -95,35 +95,41 @@ const deleteComment = async (req, res) => {
   }
 };
 
+const getFavourites = async (req, res) => {
+  try {
+    const favourites = await knex("products")
+      .join("favourites", "favourites.product_id", "=", "products.id")
+      .select("favourites.*")
+      .where({ "products.id": req.params.productId });
+
+    res.status(200).json(favourites);
+  } catch (error) {
+    res.status(400).send(`Failed to retrieve data: ${error}`);
+  }
+};
+
 const addFavourite = async (req, res) => {
   try {
-    const { productId } = req.params;
-    const { userId } = req.user.id;
-
-    const userExists = await knex("users").where({ id: userId }).first();
-    const productExists = await knex("products")
-      .where({ id: productId })
-      .first();
-
-    if (!userExists || !productExists) {
-      return res.status(404).json({ message: "User or product not found." });
-    }
-
     const favouriteData = {
-      user_id: userId,
-      product_id: productId,
+      product_id: req.params.productId,
+      user_id: req.body.user_id,
+      is_favourited: true,
     };
 
-    const favourite = await knex("favorites").insert(favouriteData);
+    const result = await knex("favourites").insert(favouriteData);
 
-    const newFavouriteId = favourite[0];
+    const newFavouriteId = result[0];
     const addedFavourite = await knex("favourites").where({
       id: newFavouriteId,
     });
 
     res.status(201).json(addedFavourite);
   } catch (error) {
-    res.status(500).send(`Unable to add product to favorites: ${error}`);
+    res
+      .status(500)
+      .send(
+        `Unable to add product with ID ${req.params.productId} to favourites:, ${error}`
+      );
   }
 };
 
@@ -134,5 +140,6 @@ module.exports = {
   addComment,
   deleteComment,
   getUserForComment,
+  getFavourites,
   addFavourite,
 };

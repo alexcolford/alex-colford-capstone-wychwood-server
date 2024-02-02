@@ -57,6 +57,7 @@ exports.up = function (knex) {
         .unsigned()
         .references("id")
         .inTable("products");
+      table.boolean("is_favourited").defaultTo(false);
     });
 };
 

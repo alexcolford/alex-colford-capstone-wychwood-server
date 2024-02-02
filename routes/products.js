@@ -6,11 +6,14 @@ router.route("/").get(productController.getAllProducts);
 router.route("/:productId").get(productController.getProductbyId);
 
 router
+  .route("/:productId/favourites")
+  .get(productController.getFavourites)
+  .post(productController.addFavourite);
+
+router
   .route("/:productId/comments")
   .get(productController.getAllCommentsForProduct)
   .post(productController.addComment)
   .delete(productController.deleteComment);
-
-router.route("/:productId/favourite").post(productController.addFavourite);
 
 module.exports = router;
