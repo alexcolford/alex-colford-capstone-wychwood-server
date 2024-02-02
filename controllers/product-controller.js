@@ -81,13 +81,13 @@ const addComment = async (req, res) => {
 const deleteComment = async (req, res) => {
   try {
     const rowsDeleted = await knex("comments")
-      .where({ id: req.params.id })
+      .where({ id: req.body.id })
       .delete();
 
     if (rowsDeleted === 0) {
       return res
         .status(404)
-        .json({ message: `Comment with ID ${req.params.id} not found` });
+        .json({ message: `Comment with ID ${req.body.id} not found` });
     }
     res.sendStatus(204);
   } catch (error) {
