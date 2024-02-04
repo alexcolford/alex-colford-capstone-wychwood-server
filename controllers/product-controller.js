@@ -27,11 +27,9 @@ const getAllCommentsForProduct = async (req, res) => {
 
     res.status(200).json(comments);
   } catch (error) {
-    res
-      .status(500)
-      .send(
-        `Unable to retrieve comments for product with ID ${req.params.productId}: ${error}`
-      );
+    console.log(
+      `Unable to retrieve comments for product with ID ${req.params.productId}: ${error}`
+    );
   }
 };
 
@@ -44,11 +42,9 @@ const getUserForComment = async (req, res) => {
 
     res.status(200).json(user);
   } catch (error) {
-    res
-      .status(500)
-      .send(
-        `Unable to retrieve user for comment with ID ${req.params.userId}: ${error}`
-      );
+    console.log(
+      `Unable to retrieve user for comment with ID ${req.params.userId}: ${error}`
+    );
   }
 };
 
@@ -63,18 +59,11 @@ const addComment = async (req, res) => {
 
     const result = await knex("comments").insert(commentData);
 
-    const newCommentId = result[0];
-    const addedComment = await knex("comments").where({
-      id: newCommentId,
-    });
-
-    res.status(201).json(addedComment);
+    res.status(201).json(result);
   } catch (error) {
-    res
-      .status(500)
-      .send(
-        `Unable to add new comment for product with ID ${req.params.productId}: ${error}`
-      );
+    console.log(
+      `Unable to add new comment for product with ID ${req.params.productId}: ${error}`
+    );
   }
 };
 
@@ -91,7 +80,48 @@ const deleteComment = async (req, res) => {
     }
     res.sendStatus(204);
   } catch (error) {
-    res.status(500).json({ message: `Unable to delete comment: ${error}` });
+    console.log("Unable to add comment:", error);
+  }
+};
+
+const addFavourite = async (req, res) => {
+  try {
+    const alreadyFavourited = await knex("favourites")
+      .where({ user_id: req.body.user_id, product_id: req.params.productId })
+      .first();
+
+    if (alreadyFavourited) {
+      res.status(404).json({ error: "Product is already favourited" });
+    } else {
+      await knex("favourites").insert({
+        user_id: req.body.user_id,
+        product_id: req.params.productId,
+        is_favourited: true,
+      });
+    }
+    res.status(200).json({ message: "Product added to favourites" });
+  } catch (error) {
+    console.log("Error adding product to favorites:", error);
+  }
+};
+
+const deleteFavourite = async (req, res) => {
+  try {
+    const alreadyFavourited = await knex("favourites")
+      .where({ user_id: req.body.user_id, product_id: req.params.productId })
+      .first();
+
+    if (alreadyFavourited) {
+      await knex("favourites")
+        .where({ user_id: req.body.user_id, product_id: req.params.productId })
+        .delete();
+
+      res.status(200).json({ message: "Product removed from favourites" });
+    } else {
+      res.status(404).json({ error: "Product is not favourited" });
+    }
+  } catch (error) {
+    console.error("Error removing product from favorites:", error);
   }
 };
 
@@ -102,4 +132,6 @@ module.exports = {
   addComment,
   deleteComment,
   getUserForComment,
+  addFavourite,
+  deleteFavourite,
 };

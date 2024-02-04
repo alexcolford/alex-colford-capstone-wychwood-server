@@ -11,8 +11,8 @@ router.route("/current").get(userController.currentUser);
 
 router
   .route("/profile/:userId")
-  .get(userController.getAllFavourites)
   .get(userController.getFavouritesForProduct)
-  .post(userController.addFavourite);
+
+  .delete(userController.deleteUser);
 
 module.exports = router;

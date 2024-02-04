@@ -6,6 +6,11 @@ router.route("/").get(productController.getAllProducts);
 router.route("/:productId").get(productController.getProductbyId);
 
 router
+  .route("/:productId/favourite")
+  .post(productController.addFavourite)
+  .delete(productController.deleteFavourite);
+
+router
   .route("/:productId/comments")
   .get(productController.getAllCommentsForProduct)
   .post(productController.addComment)
