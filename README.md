@@ -1,6 +1,8 @@
-# Project Title
+# Wychwood Naturals
 
-Wychwood Naturals
+In this capstone, I wanted to partner with a local small business to help create a draft for a future website.
+
+![](main-page-screenshot.png)
 
 ## Overview
 
@@ -23,7 +25,7 @@ Wychwood Naturals is a small family business that focuses on the benefits of nat
 - Knex
 - Node
 
-### Install
+### Installation
 
 1. Install dependencies
 
