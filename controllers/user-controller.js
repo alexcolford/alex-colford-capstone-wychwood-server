@@ -109,6 +109,57 @@ const getFavouritesForProduct = async (req, res) => {
   }
 };
 
+// const updateUser = async (req, res) => {
+//   try {
+
+//     const rowsUpdated = await knex("users")
+//       .where({ id: req.params.userId })
+//       .update(req.body);
+
+//     console.log("Received PATCH request with body:", req.body);
+
+//     if (rowsUpdated === 0) {
+//       return res.status(404).json({
+//         message: `User with ID ${req.params.id} not found`,
+//       });
+//     }
+
+//     const editedUser = await knex("users").where({
+//       id: req.params.id,
+//     });
+
+//     res.json(editedUser[0]);
+//   } catch (error) {
+//     res.status(500).json({
+//       message: `Unable to update user with ID ${req.params.id}: ${error}`,
+//     });
+//   }
+// };
+
+const updateUser = async (req, res) => {
+  try {
+    const rowsUpdated = await knex("users")
+      .where({ id: req.params.userId })
+      .update(req.body);
+
+    if (rowsUpdated === 0) {
+      return res.status(404).json({
+        message: `User with ID ${req.params.userId} not found`,
+      });
+    }
+
+    const updatedUser = await knex("users").where({
+      id: req.params.userId,
+    });
+
+    res.json(updatedUser[0]);
+  } catch (error) {
+    res.status(500).json({
+      message: `Unable to update user with ID ${req.params.userId}: ${error}`,
+    });
+  }
+};
+
 const deleteUser = async (req, res) => {
   try {
     const rowsDeleted = await knex("users")
@@ -131,6 +182,7 @@ module.exports = {
   addUser,
   loginUser,
   currentUser,
+  updateUser,
   deleteUser,
   getFavouritesForProduct,
 };

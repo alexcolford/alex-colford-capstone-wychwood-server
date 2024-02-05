@@ -12,7 +12,8 @@ router.route("/current").get(userController.currentUser);
 router
   .route("/profile/:userId")
   .get(userController.getFavouritesForProduct)
-
   .delete(userController.deleteUser);
+
+router.route("/:userId/edit").patch(userController.updateUser);
 
 module.exports = router;
